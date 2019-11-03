@@ -3,8 +3,8 @@
     Tool to track CPU, RAM and GPU usage.
 .NOTES
     File Name      : Invoke-Telemetry.ps1
-    Prerequisite   : PowerShell v5.1, Nvidia GeForce
-    Authors        : Antoine Cauchois
+    Prerequisites   : PowerShell v5.1, Nvidia GeForce
+    Author        : Antoine Cauchois
 #>
 
 $nvidiaSMIPath = 'C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe'
