@@ -7,7 +7,7 @@
     Author        : Antoine Cauchois
 #>
 
-$nvidiaSMIPath = 'C:\Program Files\NVIDIA Corporation\NVSMI\nvidia-smi.exe'
+$nvidiaSMIPath = Join-Path -Path $Env:ProgramFiles -ChildPath 'NVIDIA Corporation\NVSMI\nvidia-smi.exe'
 $desktopPath = Join-Path -Path $Env:USERPROFILE -ChildPath 'Desktop'
 $outFilePath = Join-Path -Path $desktopPath -ChildPath ([string]([string]::Concat([string](Get-Date -Format "yyyyMMdd"), "-Telemetry.csv")))
 $totalMemory = [uint64](Get-Counter '\NUMA Node Memory(*)\Total MBytes').CounterSamples[-1].CookedValue
