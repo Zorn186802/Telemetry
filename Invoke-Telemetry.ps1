@@ -10,7 +10,6 @@
 $nvidiaSMIPath = Join-Path -Path $Env:ProgramFiles -ChildPath 'NVIDIA Corporation\NVSMI\nvidia-smi.exe'
 $desktopPath = Join-Path -Path $Env:USERPROFILE -ChildPath 'Desktop'
 $outFilePath = Join-Path -Path $desktopPath -ChildPath ([string]([string]::Concat([string](Get-Date -Format "yyyyMMdd"), "-Telemetry.csv")))
-$totalMemory = [uint64](Get-Counter '\NUMA Node Memory(*)\Total MBytes').CounterSamples[-1].CookedValue
 $timer = [Diagnostics.Stopwatch]::StartNew()
 
 If (-not (Test-Path -Path $nvidiaSMIPath)) {
@@ -22,8 +21,10 @@ If (Test-Path -Path $outFilePath) {
 }
 
 While ($timer.Elapsed.TotalHours -lt 2) {
-    $cpuUsage = (Get-Counter '\Processor(_Total)\% Processor Time').CounterSamples.CookedValue
-    $memoryUsage = (($totalMemory - [uint64](Get-Counter '\Memory\Available MBytes').CounterSamples.CookedValue) * 100) / $totalMemory
+    $cpuUsage = (Get-WmiObject -Class win32_processor -ErrorAction Stop | Measure-Object -Property LoadPercentage -Average | Select-Object Average).Average
+
+    $computerMemory = Get-WmiObject -Class win32_operatingsystem -ErrorAction Stop
+    $memoryUsage = ((($computerMemory.TotalVisibleMemorySize - $computerMemory.FreePhysicalMemory) * 100) / $computerMemory.TotalVisibleMemorySize)
     try {
         $gpuUsage = Invoke-Expression -Command "& '$nvidiaSMIPath' --query-gpu=utilization.gpu --format=csv,noheader,nounits"
     } catch {
