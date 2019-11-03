@@ -39,4 +39,5 @@ While ($timer.Elapsed.TotalHours -lt 2) {
     $lineOutput | Export-Csv -Path $outFilePath -Delimiter ';' -Append -NoTypeInformation
 
     Start-Sleep -Seconds 10
+    [System.GC]::Collect()
 }
